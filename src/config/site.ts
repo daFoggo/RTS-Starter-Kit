@@ -1,0 +1,13 @@
+export const siteConfig = {
+  name: "RTS Starter Kit",
+  url: "https://rtskit.vercel.app",
+  ogImage: "https://rtskit.vercel.app/og.jpg",
+  description:
+    "React-Tanstack-Shadcn Kit for building modern web applications with ease.",
+  links: {
+    profile: "https://github.com/daFoggo/",
+    github: "https://github.com/daFoggo/RTS-Starter-Kit",
+  },
+};
+
+export type SiteConfig = typeof siteConfig;
