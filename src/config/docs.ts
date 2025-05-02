@@ -13,12 +13,12 @@ export const docsConfig: DocsConfig = {
       href: "/",
     },
     {
-      title: "Tanstack Table",
-      href: "/tanstack-table",
+      title: "Tanstack Routing",
+      href: "/tanstack-routing",
     },
     {
-      title: "Tanstack Query",
-      href: "/tanstack-query",
+      title: "Tanstack Table & Query",
+      href: "/tanstack-table-query",
     },
     {
       title: "Recharts",

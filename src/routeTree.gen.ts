@@ -11,14 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TanstackTableImport } from './routes/tanstack-table'
+import { Route as TanstackTableQueryImport } from './routes/tanstack-table-query'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const TanstackTableRoute = TanstackTableImport.update({
-  id: '/tanstack-table',
-  path: '/tanstack-table',
+const TanstackTableQueryRoute = TanstackTableQueryImport.update({
+  id: '/tanstack-table-query',
+  path: '/tanstack-table-query',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,11 +39,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/tanstack-table': {
-      id: '/tanstack-table'
-      path: '/tanstack-table'
-      fullPath: '/tanstack-table'
-      preLoaderRoute: typeof TanstackTableImport
+    '/tanstack-table-query': {
+      id: '/tanstack-table-query'
+      path: '/tanstack-table-query'
+      fullPath: '/tanstack-table-query'
+      preLoaderRoute: typeof TanstackTableQueryImport
       parentRoute: typeof rootRoute
     }
   }
@@ -53,37 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/tanstack-table': typeof TanstackTableRoute
+  '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/tanstack-table': typeof TanstackTableRoute
+  '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/tanstack-table': typeof TanstackTableRoute
+  '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tanstack-table'
+  fullPaths: '/' | '/tanstack-table-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tanstack-table'
-  id: '__root__' | '/' | '/tanstack-table'
+  to: '/' | '/tanstack-table-query'
+  id: '__root__' | '/' | '/tanstack-table-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TanstackTableRoute: typeof TanstackTableRoute
+  TanstackTableQueryRoute: typeof TanstackTableQueryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TanstackTableRoute: TanstackTableRoute,
+  TanstackTableQueryRoute: TanstackTableQueryRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +97,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/tanstack-table"
+        "/tanstack-table-query"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/tanstack-table": {
-      "filePath": "tanstack-table.tsx"
+    "/tanstack-table-query": {
+      "filePath": "tanstack-table-query.tsx"
     }
   }
 }
