@@ -1,10 +1,10 @@
 import { DataTable } from "@/components/ui/data-table"
+import type { FilterableColumns, SearchableColumns } from "@/components/ui/data-table-toolbar"
 import { SAMPLE_PAYMENT } from "../utils/constants"
 import { TableColumn } from "./TableColumn"
 
 const PreviewTable = () => {
-
-  const searchableColumns = [
+  const searchableColumns: SearchableColumns[] = [
     {
       id: "id",
       title: "ID"
@@ -15,7 +15,7 @@ const PreviewTable = () => {
     },
   ]
 
-  const filterableColumns = [
+  const filterableColumns: FilterableColumns[] = [
     {
       id: "status",
       title: "Status",
@@ -25,7 +25,12 @@ const PreviewTable = () => {
         { label: "Success", value: "success" },
         { label: "Failed", value: "failed" },
       ],
+      type: "select",
     },
+    {
+      id: "createdAt",
+      type: "date-range",
+    }
   ]
 
   return (

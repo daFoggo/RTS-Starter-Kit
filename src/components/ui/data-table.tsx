@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -15,28 +14,18 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
+import { DataTableToolbar, type FilterableColumns, type SearchableColumns } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  filterableColumns?: {
-    id: string
-    title: string
-    options: {
-      label: string
-      value: string
-      icon?: React.ComponentType<{ className?: string }>
-    }[]
-  }[]
-  searchableColumns?: {
-    id: string
-    title: string
-  }[]
+  searchableColumns?: SearchableColumns[]
+  filterableColumns?: FilterableColumns[]
   deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 

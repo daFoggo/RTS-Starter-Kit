@@ -14,14 +14,32 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-export function DateTimePicker24h() {
-    const [date, setDate] = React.useState<Date>();
-    const [isOpen, setIsOpen] = React.useState(false);
+interface DateTimePicker24hProps {
+    onChange?: (date: Date | undefined) => void;
+    placeholder?: string;
+    date?: Date | undefined;
+}
 
+export function DateTimePicker24h({
+    onChange,
+    placeholder = "Pick a date",
+    date,
+}: DateTimePicker24hProps) {
+    const [isOpen, setIsOpen] = React.useState(false);
     const hours = Array.from({ length: 24 }, (_, i) => i);
+
     const handleDateSelect = (selectedDate: Date | undefined) => {
-        if (selectedDate) {
-            setDate(selectedDate);
+        if (selectedDate && onChange) {
+            const newDate = new Date(selectedDate);
+
+            if (date) {
+                newDate.setHours(date.getHours());
+                newDate.setMinutes(date.getMinutes());
+            }
+
+            onChange(newDate);
+        } else if (!selectedDate && onChange) {
+            onChange(undefined);
         }
     };
 
@@ -29,14 +47,26 @@ export function DateTimePicker24h() {
         type: "hour" | "minute",
         value: string
     ) => {
-        if (date) {
-            const newDate = new Date(date);
+        if (date && onChange) {
+            const newDate = new Date(date.getTime());
+
             if (type === "hour") {
                 newDate.setHours(parseInt(value));
             } else if (type === "minute") {
                 newDate.setMinutes(parseInt(value));
             }
-            setDate(newDate);
+
+            onChange(newDate);
+        } else if (!date && onChange) {
+            const newDate = new Date();
+            if (type === "hour") {
+                newDate.setHours(parseInt(value));
+                newDate.setMinutes(0);
+            } else {
+                newDate.setMinutes(parseInt(value));
+            }
+
+            onChange(newDate);
         }
     };
 
@@ -52,24 +82,25 @@ export function DateTimePicker24h() {
                 >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date ? (
-                        format(date, "MM/dd/yyyy hh:mm")
+                        format(date, "MM/dd/yyyy HH:mm")
                     ) : (
-                        <span>MM/DD/YYYY hh:mm</span>
+                        <span>{placeholder}</span>
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0" align="start">
                 <div className="sm:flex">
                     <Calendar
                         mode="single"
                         selected={date}
                         onSelect={handleDateSelect}
                         initialFocus
+                        className={cn("p-3 pointer-events-auto")}
                     />
                     <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
                         <ScrollArea className="w-64 sm:w-auto">
                             <div className="flex sm:flex-col p-2">
-                                {hours.reverse().map((hour) => (
+                                {hours.map((hour) => (
                                     <Button
                                         key={hour}
                                         size="icon"

@@ -1,3 +1,4 @@
+
 import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 
@@ -41,7 +42,6 @@ export const TableColumn: ColumnDef<Payment>[] = [
             const id = row.getValue("id") as string
             return <span className="font-medium">{id}</span>
         },
-        enableSorting: false,
     },
     {
         accessorKey: "status",
@@ -83,6 +83,24 @@ export const TableColumn: ColumnDef<Payment>[] = [
             }).format(amount)
 
             return <div className="font-medium">{formatted}</div>
+        },
+    },
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
+        cell: ({ row }) => {
+            const createdAt = row.getValue("createdAt") as Date
+            return <div>{createdAt ? createdAt.toLocaleDateString(
+                "vi-VN"
+            ) : "N/A"}</div>
+        },
+        filterFn: (row, id, filterValue) => {
+            if (!filterValue) return true;
+            const date = row.getValue(id) as Date;
+            if (!date) return false;
+
+            const { from, to } = filterValue as { from: Date; to: Date };
+            return date >= from && date <= to;
         },
     },
     {
