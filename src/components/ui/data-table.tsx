@@ -18,7 +18,6 @@ import * as React from "react"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-import { Loader2 } from "lucide-react"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar, type FilterableColumns, type SearchableColumns } from "./data-table-toolbar"
 
