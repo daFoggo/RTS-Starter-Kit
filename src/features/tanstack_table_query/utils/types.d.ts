@@ -25,6 +25,11 @@ export interface IInvoiceFormDialogProps {
   handleDelete: () => void;
 }
 
+export interface IInvoiceActionBarProps {
+  table: Table<IInvoice>
+  statusOptions: Array<{ label: string; value: string }>
+}
+
 export type StatusType = "pending" | "processing" | "success" | "failed";
 
 // you will have to make a different DTO if backend use different names for the fields

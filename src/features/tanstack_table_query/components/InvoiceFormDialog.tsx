@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 import { DIALOG_DESCRIPTIONS, DIALOG_TITLES, SUBMIT_BUTTON_TEXTS } from "../utils/constants";
 import type { IInvoiceFormDialogProps } from "../utils/types";
 
@@ -189,14 +190,18 @@ const InvoiceFormDialog = ({
                   type="button"
                   onClick={() => setIsOpen(false)}
                   variant="outline"
-                  disabled={isSubmitting}
                   className={isReadOnly ? "w-full" : ""}
                 >
                   {isReadOnly ? "Close" : "Cancel"}
                 </Button>
                 {!isReadOnly && (
-                  <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
-                    {isSubmitting ? "Submitting..." : submitButtonText}
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        Submitting...
+                        <Loader2 className="animate-spin size-4 ml-2" />
+                      </>
+                    ) : submitButtonText}
                   </Button>
                 )}
               </DialogFooter>

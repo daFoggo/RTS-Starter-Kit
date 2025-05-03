@@ -7,20 +7,23 @@ import type { CreateInvoiceDTO, IInvoiceQueryParams } from "../utils/types";
 export const invoiceKeys = {
   all: ["invoices"] as const,
   lists: () => [...invoiceKeys.all, "list"] as const,
-  list: (filters: IInvoiceQueryParams) => 
-    [...invoiceKeys.lists(), { 
-      status: filters.status, 
-      search: filters.search,
-      page: filters.page,
-      limit: filters.limit 
-    }] as const,
+  list: (filters: IInvoiceQueryParams) =>
+    [
+      ...invoiceKeys.lists(),
+      {
+        status: filters.status,
+        search: filters.search,
+        page: filters.page,
+        limit: filters.limit,
+      },
+    ] as const,
   details: () => [...invoiceKeys.all, "detail"] as const,
   detail: (id: string) => [...invoiceKeys.details(), id] as const,
 };
 
 export const useInvoices = (params: IInvoiceQueryParams) => {
   const { status, search, page = 1, limit = 10 } = params;
-  
+
   return useQuery({
     queryKey: invoiceKeys.list(params),
     queryFn: () => api.getInvoices({ status, search, page, limit }),
@@ -49,7 +52,6 @@ export const useCreateInvoice = () => {
       // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        refetchType: 'none', 
       });
     },
   });
@@ -71,7 +73,6 @@ export const useUpdateInvoice = (id: string) => {
       // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        refetchType: 'none',
       });
     },
   });
@@ -90,7 +91,52 @@ export const useDeleteInvoice = () => {
       // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        refetchType: 'none',
+      });
+    },
+  });
+};
+
+export const useBulkUpdateInvoices = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      ids,
+      data,
+    }: {
+      ids: string[];
+      data: Partial<CreateInvoiceDTO>;
+    }) => api.bulkUpdateInvoices(ids, data),
+    onSuccess: (updatedInvoices) => {
+      // Update the cache with the updated invoice data
+      updatedInvoices.forEach((invoice) => {
+        queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice);
+      });
+
+      // Invalidate the list query to ensure it reflects the new data
+      queryClient.invalidateQueries({
+        queryKey: invoiceKeys.lists(),
+      });
+    },
+  });
+};
+
+export const useBulkDeleteInvoices = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => api.bulkDeleteInvoices(ids),
+    onSuccess: (_, ids) => {
+      ids.forEach((id) => {
+        // Remove the deleted invoice from the cache
+        queryClient.removeQueries({
+          queryKey: invoiceKeys.detail(id),
+        });
+      });
+
+      // Invalidate the list query to ensure it reflects the new data
+      queryClient.invalidateQueries({
+        queryKey: invoiceKeys.lists(),
       });
     },
   });

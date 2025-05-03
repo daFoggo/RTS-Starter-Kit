@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Copy, Eye, MoreHorizontal, Pen, Plus, Trash2 } from "lucide-react"
+import * as React from "react"
 import { useInvoiceFormDialog } from "../hooks/useInvoiceFormDialog"
 import { useInvoices } from "../hooks/useInvoices"
 import type { IInvoice } from "../utils/types"
+import InvoiceActionBar from "./InvoiceActionBar"
 import InvoiceFormDialog from "./InvoiceFormDialog"
 
 const InvoiceTable = () => {
@@ -44,16 +46,18 @@ const InvoiceTable = () => {
     },
   ]
 
+  const statusOptions = [
+    { label: "Pending", value: "pending" },
+    { label: "Processing", value: "processing" },
+    { label: "Success", value: "success" },
+    { label: "Failed", value: "failed" },
+  ]
+
   const filterableColumns: FilterableColumns[] = [
     {
       id: "status",
       title: "Status",
-      options: [
-        { label: "Pending", value: "pending" },
-        { label: "Processing", value: "processing" },
-        { label: "Success", value: "success" },
-        { label: "Failed", value: "failed" },
-      ],
+      options: statusOptions,
       type: "select",
     },
     {
@@ -62,7 +66,7 @@ const InvoiceTable = () => {
     }
   ]
 
-  const invoiceColumn: ColumnDef<IInvoice>[] = [
+  const invoiceColumns: ColumnDef<IInvoice>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -183,7 +187,7 @@ const InvoiceTable = () => {
               <DropdownMenuItem onClick={() => openDialog("update", invoice)}>
                 <Pen className="size-4 mr-2" />Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openDialog("read", invoice)}>
+              <DropdownMenuItem onClick={() => openDialog("delete", invoice)}>
                 <Trash2 className="size-4 mr-2 text-destructive" />
                 <p className="text-destructive hover:text-destructive">Delete</p>
               </DropdownMenuItem>
@@ -194,22 +198,27 @@ const InvoiceTable = () => {
     },
   ]
 
+  const renderActionBar = React.useCallback((table: any) => {
+    return <InvoiceActionBar table={table} statusOptions={statusOptions} />
+  }, [])
+
   return (
     <div className="container-wrapper py-8 md:py-10 lg:py-12">
-      <div className="container">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Invoices</h1>
+      <div className="container space-y-4">
+        <div className="flex justify-between items-center">
+          <p className="text-2xl font-bold">Invoices</p>
           <Button onClick={() => openDialog("create")}>
             <Plus className="mr-2 size-4" /> New Invoice
           </Button>
         </div>
 
         <DataTable
-          columns={invoiceColumn}
+          columns={invoiceColumns}
           data={invoices}
           searchableColumns={searchableColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoadingInvoices}
+          renderActionBar={renderActionBar}
         />
 
         <InvoiceFormDialog

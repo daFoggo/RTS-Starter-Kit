@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import type { FormType, IInvoice } from "../utils/types";
 import {
@@ -64,8 +65,12 @@ export const useInvoiceFormDialog = () => {
       } else if (formType === "update" && invoiceId) {
         await updateInvoiceMutation.mutateAsync(values);
       }
-
       setIsOpen(false);
+      toast.success(
+        formType === "create"
+          ? "Invoice created successfully!"
+          : "Invoice updated successfully!"
+      );
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -76,6 +81,7 @@ export const useInvoiceFormDialog = () => {
       try {
         await deleteInvoiceMutation.mutateAsync(invoiceId);
         setIsOpen(false);
+        toast.success("Invoice deleted successfully!");
       } catch (error) {
         console.error("Error deleting invoice:", error);
       }

@@ -78,4 +78,53 @@ export const api = {
       toast.error("Invoice not found");
     }
   },
+
+  bulkUpdateInvoices: async (
+    ids: string[],
+    data: Partial<IInvoice>
+  ): Promise<IInvoice[]> => {
+    await delay(1000);
+
+    const updatedInvoices: IInvoice[] = [];
+    const notFoundIds: string[] = [];
+
+    ids.forEach((id) => {
+      const index = SAMPLE_INVOICES.findIndex((invoice) => invoice.id === id);
+      if (index !== -1) {
+        SAMPLE_INVOICES[index] = { ...SAMPLE_INVOICES[index], ...data };
+        updatedInvoices.push(SAMPLE_INVOICES[index]);
+      } else {
+        notFoundIds.push(id);
+      }
+    });
+
+    if (notFoundIds.length > 0) {
+      toast.error(`${notFoundIds.length} invoice(s) not found`);
+    }
+    
+    return updatedInvoices;
+  },
+
+  bulkDeleteInvoices: async (ids: string[]): Promise<string[]> => {
+    await delay(1000);
+
+    const deletedIds: string[] = [];
+    const notFoundIds: string[] = [];
+
+    ids.forEach((id) => {
+      const index = SAMPLE_INVOICES.findIndex((invoice) => invoice.id === id);
+      if (index !== -1) {
+        SAMPLE_INVOICES.splice(index, 1);
+        deletedIds.push(id);
+      } else {
+        notFoundIds.push(id);
+      }
+    });
+
+    if (notFoundIds.length > 0) {
+      toast.error(`${notFoundIds.length} invoice(s) not found`);
+    }
+
+    return deletedIds;
+  },
 };
