@@ -43,6 +43,7 @@ const InvoiceFormDialog = ({
   const dialogTitle = DIALOG_TITLES[formType] || "Invoice Form";
   const dialogDescription = DIALOG_DESCRIPTIONS[formType] || "Fill in the details below.";
   const submitButtonText = SUBMIT_BUTTON_TEXTS[formType] || "Submit";
+  const isReadOnly = formType === "read";
 
   if (formType === "delete") {
     return (
@@ -80,7 +81,7 @@ const InvoiceFormDialog = ({
           <div className="flex items-center justify-center py-6">Loading...</div>
         ) : (
           <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
+            <form onSubmit={isReadOnly ? (e) => e.preventDefault() : onSubmit} className="space-y-4">
               <FormField
                 control={form.control}
                 name="amount"
@@ -94,6 +95,8 @@ const InvoiceFormDialog = ({
                         placeholder="0.00"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        disabled={isReadOnly}
+                        readOnly={isReadOnly}
                       />
                     </FormControl>
                     <FormMessage />
@@ -108,7 +111,13 @@ const InvoiceFormDialog = ({
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="email@example.com" {...field} />
+                      <Input
+                        type="email"
+                        placeholder="email@example.com"
+                        {...field}
+                        disabled={isReadOnly}
+                        readOnly={isReadOnly}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,19 +130,29 @@ const InvoiceFormDialog = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    {isReadOnly ? (
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a status" />
-                        </SelectTrigger>
+                        <Input
+                          value={field.value.charAt(0).toUpperCase() + field.value.slice(1)}
+                          disabled={true}
+                          readOnly={true}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="success">Success</SelectItem>
-                        <SelectItem value="failed">Failed</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    ) : (
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="processing">Processing</SelectItem>
+                          <SelectItem value="success">Success</SelectItem>
+                          <SelectItem value="failed">Failed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -146,11 +165,19 @@ const InvoiceFormDialog = ({
                   <FormItem className="flex flex-col">
                     <FormLabel>Date & Time</FormLabel>
                     <FormControl>
-                      <DateTimePicker
-                        date={field.value}
-                        onChange={field.onChange}
-                        placeholder="Select date and time"
-                      />
+                      {isReadOnly ? (
+                        <Input
+                          value={field.value ? new Date(field.value).toLocaleString() : ""}
+                          disabled={true}
+                          readOnly={true}
+                        />
+                      ) : (
+                        <DateTimePicker
+                          date={field.value}
+                          onChange={field.onChange}
+                          placeholder="Select date and time"
+                        />
+                      )}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,15 +187,18 @@ const InvoiceFormDialog = ({
               <DialogFooter>
                 <Button
                   type="button"
-                  variant="secondary"
                   onClick={() => setIsOpen(false)}
+                  variant="outline"
                   disabled={isSubmitting}
+                  className={isReadOnly ? "w-full" : ""}
                 >
-                  Cancel
+                  {isReadOnly ? "Close" : "Cancel"}
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : submitButtonText}
-                </Button>
+                {!isReadOnly && (
+                  <Button type="submit" disabled={isSubmitting} isLoading={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : submitButtonText}
+                  </Button>
+                )}
               </DialogFooter>
             </form>
           </Form>

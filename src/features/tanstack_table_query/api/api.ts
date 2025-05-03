@@ -15,9 +15,21 @@ export const api = {
   //   },
 
   // these api below are just for demo purposes
-  getInvoices: async (): Promise<IInvoice[]> => {
+  getInvoices: async (params: {
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<IInvoice[]> => {
     await delay(500);
-    return SAMPLE_INVOICES;
+    return SAMPLE_INVOICES.filter((invoice) => {
+      if (params.status && invoice.status !== params.status) return false;
+      if (params.search && !invoice.email.includes(params.search)) return false;
+      return true;
+    }).slice(
+      (params.page || 1) * (params.limit || 10) - (params.limit || 10),
+      (params.page || 1) * (params.limit || 10)
+    );
   },
 
   getInvoiceById: async (id: string): Promise<IInvoice> => {

@@ -7,45 +7,28 @@ import type { CreateInvoiceDTO, IInvoiceQueryParams } from "../utils/types";
 export const invoiceKeys = {
   all: ["invoices"] as const,
   lists: () => [...invoiceKeys.all, "list"] as const,
-  list: (filters: IInvoiceQueryParams) =>
-    [...invoiceKeys.lists(), filters] as const,
+  list: (filters: IInvoiceQueryParams) => 
+    [...invoiceKeys.lists(), { 
+      status: filters.status, 
+      search: filters.search,
+      page: filters.page,
+      limit: filters.limit 
+    }] as const,
   details: () => [...invoiceKeys.all, "detail"] as const,
   detail: (id: string) => [...invoiceKeys.details(), id] as const,
 };
 
 export const useInvoices = (params: IInvoiceQueryParams) => {
+  // Chỉ lấy các tham số cần thiết cho server-side filtering
+  const { status, search, page = 1, limit = 10 } = params;
+  
   return useQuery({
     queryKey: invoiceKeys.list(params),
-    queryFn: () => api.getInvoices(),
+    // Truyền params vào API call để server xử lý filtering và pagination
+    queryFn: () => api.getInvoices({ status, search, page, limit }),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
-    select: (data) => {
-      let filteredData = [...data];
-
-      // Filter by status
-      if (params.status) {
-        filteredData = filteredData.filter(
-          (invoice) => invoice.status === params.status
-        );
-      }
-
-      // Filter by search
-      if (params.search) {
-        const searchTerm = params.search.toLowerCase();
-        filteredData = filteredData.filter((invoice) =>
-          invoice.email.toLowerCase().includes(searchTerm)
-        );
-      }
-
-      // Pagination
-      if (params.page !== undefined && params.limit !== undefined) {
-        const start = (params.page - 1) * params.limit;
-        const end = start + params.limit;
-        filteredData = filteredData.slice(start, end);
-      }
-
-      return filteredData;
-    },
+    // Không cần select function vì server đã xử lý filtering và pagination
   });
 };
 
@@ -66,9 +49,11 @@ export const useCreateInvoice = () => {
       // set new invoice to cache
       queryClient.setQueryData(invoiceKeys.detail(newInvoice.id), newInvoice);
 
-      // force refetch data
+      // Chỉ invalidate queries liên quan đến lists, không invalidate tất cả
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
+        // Prevent refetching immediately on all queries
+        refetchType: 'none', 
       });
     },
   });
@@ -87,9 +72,11 @@ export const useUpdateInvoice = (id: string) => {
         updatedInvoice
       );
 
-      // force refetch data
+      // Chỉ invalidate queries liên quan đến lists, không invalidate tất cả
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
+        // Prevent refetching immediately on all queries
+        refetchType: 'none',
       });
     },
   });
@@ -105,9 +92,11 @@ export const useDeleteInvoice = () => {
         queryKey: invoiceKeys.detail(id),
       });
 
-      // force refetch data
+      // Chỉ invalidate queries liên quan đến lists
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
+        // Prevent refetching immediately
+        refetchType: 'none',
       });
     },
   });

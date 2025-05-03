@@ -113,8 +113,5 @@ export const useInvoiceFormDialog = () => {
     onSubmit: form.handleSubmit(onSubmit),
     handleDelete,
     openDialog,
-    openCreateDialog: () => openDialog("create"),
-    openUpdateDialog: (invoice: IInvoice) => openDialog("update", invoice),
-    openDeleteDialog: (invoice: IInvoice) => openDialog("delete", invoice),
   };
 };

@@ -29,13 +29,9 @@ const InvoiceTable = () => {
     isSubmitting,
     onSubmit,
     handleDelete,
-    openCreateDialog,
-    openUpdateDialog,
-    openDeleteDialog,
+    openDialog,
     invoiceId
-  } = useInvoiceFormDialog(
-
-    )
+  } = useInvoiceFormDialog()
 
   const searchableColumns: SearchableColumns[] = [
     {
@@ -181,13 +177,13 @@ const InvoiceTable = () => {
                 <Copy className="size-4 mr-2" /> Copy invoice ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openDialog("read", invoice)}>
                 <Eye className="size-4 mr-2" />View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openUpdateDialog(invoice)}>
+              <DropdownMenuItem onClick={() => openDialog("update", invoice)}>
                 <Pen className="size-4 mr-2" />Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => openDeleteDialog(invoice)}>
+              <DropdownMenuItem onClick={() => openDialog("read", invoice)}>
                 <Trash2 className="size-4 mr-2 text-destructive" />
                 <p className="text-destructive hover:text-destructive">Delete</p>
               </DropdownMenuItem>
@@ -203,7 +199,7 @@ const InvoiceTable = () => {
       <div className="container">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Invoices</h1>
-          <Button onClick={openCreateDialog}>
+          <Button onClick={() => openDialog("create")}>
             <Plus className="mr-2 size-4" /> New Invoice
           </Button>
         </div>
