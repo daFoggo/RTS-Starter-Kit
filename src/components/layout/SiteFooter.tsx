@@ -15,7 +15,16 @@ const SiteFooter = () => {
                         >
                             Foggo
                         </a>
-                        . The source code is available on{" "}
+                        . Many code was stolen from{" "}
+                        <a
+                            href={siteConfig.links.shadcn}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-medium underline underline-offset-4"
+                        >
+                            shadcn
+                        </a>
+                         . The source code is available on{" "}
                         <a
                             href={siteConfig.links.github}
                             target="_blank"

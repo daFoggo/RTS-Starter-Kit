@@ -7,6 +7,7 @@ export const siteConfig = {
   links: {
     profile: "https://github.com/daFoggo/",
     github: "https://github.com/daFoggo/RTS-Starter-Kit",
+    shadcn: "https://ui.shadcn.com/",
   },
 };
 
