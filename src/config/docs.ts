@@ -9,10 +9,6 @@ export interface DocsConfig {
 export const docsConfig: DocsConfig = {
   mainNav: [
     {
-      title: "Home",
-      href: "/",
-    },
-    {
       title: "Tanstack Routing",
       href: "/tanstack-routing",
     },

@@ -12,6 +12,9 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TanstackTableQueryImport } from './routes/tanstack-table-query'
+import { Route as TanstackRoutingImport } from './routes/tanstack-routing'
+import { Route as RechartsImport } from './routes/recharts'
+import { Route as FramerMotionImport } from './routes/framer-motion'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -19,6 +22,24 @@ import { Route as IndexImport } from './routes/index'
 const TanstackTableQueryRoute = TanstackTableQueryImport.update({
   id: '/tanstack-table-query',
   path: '/tanstack-table-query',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TanstackRoutingRoute = TanstackRoutingImport.update({
+  id: '/tanstack-routing',
+  path: '/tanstack-routing',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RechartsRoute = RechartsImport.update({
+  id: '/recharts',
+  path: '/recharts',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FramerMotionRoute = FramerMotionImport.update({
+  id: '/framer-motion',
+  path: '/framer-motion',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +60,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/framer-motion': {
+      id: '/framer-motion'
+      path: '/framer-motion'
+      fullPath: '/framer-motion'
+      preLoaderRoute: typeof FramerMotionImport
+      parentRoute: typeof rootRoute
+    }
+    '/recharts': {
+      id: '/recharts'
+      path: '/recharts'
+      fullPath: '/recharts'
+      preLoaderRoute: typeof RechartsImport
+      parentRoute: typeof rootRoute
+    }
+    '/tanstack-routing': {
+      id: '/tanstack-routing'
+      path: '/tanstack-routing'
+      fullPath: '/tanstack-routing'
+      preLoaderRoute: typeof TanstackRoutingImport
+      parentRoute: typeof rootRoute
+    }
     '/tanstack-table-query': {
       id: '/tanstack-table-query'
       path: '/tanstack-table-query'
@@ -53,36 +95,67 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/framer-motion': typeof FramerMotionRoute
+  '/recharts': typeof RechartsRoute
+  '/tanstack-routing': typeof TanstackRoutingRoute
   '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/framer-motion': typeof FramerMotionRoute
+  '/recharts': typeof RechartsRoute
+  '/tanstack-routing': typeof TanstackRoutingRoute
   '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/framer-motion': typeof FramerMotionRoute
+  '/recharts': typeof RechartsRoute
+  '/tanstack-routing': typeof TanstackRoutingRoute
   '/tanstack-table-query': typeof TanstackTableQueryRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tanstack-table-query'
+  fullPaths:
+    | '/'
+    | '/framer-motion'
+    | '/recharts'
+    | '/tanstack-routing'
+    | '/tanstack-table-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tanstack-table-query'
-  id: '__root__' | '/' | '/tanstack-table-query'
+  to:
+    | '/'
+    | '/framer-motion'
+    | '/recharts'
+    | '/tanstack-routing'
+    | '/tanstack-table-query'
+  id:
+    | '__root__'
+    | '/'
+    | '/framer-motion'
+    | '/recharts'
+    | '/tanstack-routing'
+    | '/tanstack-table-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FramerMotionRoute: typeof FramerMotionRoute
+  RechartsRoute: typeof RechartsRoute
+  TanstackRoutingRoute: typeof TanstackRoutingRoute
   TanstackTableQueryRoute: typeof TanstackTableQueryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FramerMotionRoute: FramerMotionRoute,
+  RechartsRoute: RechartsRoute,
+  TanstackRoutingRoute: TanstackRoutingRoute,
   TanstackTableQueryRoute: TanstackTableQueryRoute,
 }
 
@@ -97,11 +170,23 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/framer-motion",
+        "/recharts",
+        "/tanstack-routing",
         "/tanstack-table-query"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/framer-motion": {
+      "filePath": "framer-motion.tsx"
+    },
+    "/recharts": {
+      "filePath": "recharts.tsx"
+    },
+    "/tanstack-routing": {
+      "filePath": "tanstack-routing.tsx"
     },
     "/tanstack-table-query": {
       "filePath": "tanstack-table-query.tsx"
