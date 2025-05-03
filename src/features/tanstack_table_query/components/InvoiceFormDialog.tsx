@@ -202,7 +202,7 @@ const InvoiceFormDialog = ({
                         <Loader2 className="animate-spin size-4 ml-2" />
                       </>
                     ) : submitButtonText}
-                  </Button>
+                  </Button> 
                 )}
               </DialogFooter>
             </form>
