@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "RTS Starter Kit",
-  url: "https://rtskit.vercel.app",
-  ogImage: "https://rtskit.vercel.app/og.jpg",
+  url: "https://rts-starter-kit.vercel.app",
+  ogImage: "https://rts-starter-kit.vercel.app/og.jpg",
   description:
     "React-Tanstack-Shadcn Kit for building modern web applications with ease.",
   links: {
