@@ -15,7 +15,7 @@ const SiteFooter = () => {
                         >
                             Foggo
                         </a>
-                        . Many code was stolen from{" "}
+                        . Many codes was stolen from{" "}
                         <a
                             href={siteConfig.links.shadcn}
                             target="_blank"
