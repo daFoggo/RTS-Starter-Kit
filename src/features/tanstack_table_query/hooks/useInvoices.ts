@@ -19,16 +19,13 @@ export const invoiceKeys = {
 };
 
 export const useInvoices = (params: IInvoiceQueryParams) => {
-  // Chỉ lấy các tham số cần thiết cho server-side filtering
   const { status, search, page = 1, limit = 10 } = params;
   
   return useQuery({
     queryKey: invoiceKeys.list(params),
-    // Truyền params vào API call để server xử lý filtering và pagination
     queryFn: () => api.getInvoices({ status, search, page, limit }),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
-    // Không cần select function vì server đã xử lý filtering và pagination
   });
 };
 
@@ -46,13 +43,12 @@ export const useCreateInvoice = () => {
   return useMutation({
     mutationFn: (data: CreateInvoiceDTO) => api.createInvoice(data),
     onSuccess: (newInvoice) => {
-      // set new invoice to cache
+      // Update the cache with the new invoice data
       queryClient.setQueryData(invoiceKeys.detail(newInvoice.id), newInvoice);
 
-      // Chỉ invalidate queries liên quan đến lists, không invalidate tất cả
+      // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        // Prevent refetching immediately on all queries
         refetchType: 'none', 
       });
     },
@@ -66,16 +62,15 @@ export const useUpdateInvoice = (id: string) => {
     mutationFn: (data: Partial<CreateInvoiceDTO>) =>
       api.updateInvoice(id, data),
     onSuccess: (updatedInvoice) => {
-      // set updated invoice to cache
+      // Update the cache with the updated invoice data
       queryClient.setQueryData(
         invoiceKeys.detail(updatedInvoice.id),
         updatedInvoice
       );
 
-      // Chỉ invalidate queries liên quan đến lists, không invalidate tất cả
+      // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        // Prevent refetching immediately on all queries
         refetchType: 'none',
       });
     },
@@ -87,15 +82,14 @@ export const useDeleteInvoice = () => {
   return useMutation({
     mutationFn: (id: string) => api.deleteInvoice(id),
     onSuccess: (_, id) => {
-      // remove invoice from cache
+      // Remove the deleted invoice from the cache
       queryClient.removeQueries({
         queryKey: invoiceKeys.detail(id),
       });
 
-      // Chỉ invalidate queries liên quan đến lists
+      // Invalidate the list query to ensure it reflects the new data
       queryClient.invalidateQueries({
         queryKey: invoiceKeys.lists(),
-        // Prevent refetching immediately
         refetchType: 'none',
       });
     },
