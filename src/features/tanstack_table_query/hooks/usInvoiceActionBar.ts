@@ -1,7 +1,7 @@
 import type { Table } from "@tanstack/react-table";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import type { IInvoice } from "../utils/types";
+import type { IInvoice, StatusType } from "../utils/types";
 import { useBulkDeleteInvoices, useBulkUpdateInvoices } from "./useInvoices";
 
 export const useInvoiceActionBar = (table: Table<IInvoice>) => {
@@ -24,7 +24,7 @@ export const useInvoiceActionBar = (table: Table<IInvoice>) => {
   );
 
   const handleBulkStatusUpdate = useCallback(
-    (newStatus: string) => {
+    (newStatus: StatusType) => {
       if (selectedIds.length === 0) return;
 
       setCurrentAction("update-status");

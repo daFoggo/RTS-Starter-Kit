@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTable } from "@/components/ui/data-table"
@@ -11,17 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Copy, Eye, MoreHorizontal, Pen, Plus, Trash2 } from "lucide-react"
 import * as React from "react"
 import { useInvoiceFormDialog } from "../hooks/useInvoiceFormDialog"
-import { useInvoices } from "../hooks/useInvoices"
+import { useGetInvoices } from "../hooks/useInvoices"
 import type { IInvoice } from "../utils/types"
-import InvoiceActionBar from "./InvoiceActionBar"
-import InvoiceFormDialog from "./InvoiceFormDialog"
+import { InvoiceActionBar } from "./InvoiceActionBar"
+import { InvoiceFormDialog } from "./InvoiceFormDialog"
 
-const InvoiceTable = () => {
-  const { data: invoices = [], isLoading: isLoadingInvoices } = useInvoices({})
+export const InvoiceTable = () => {
+  const { data: invoices = [], isLoading: isLoadingInvoices } = useGetInvoices({})
 
   const {
     isOpen,
@@ -62,6 +64,7 @@ const InvoiceTable = () => {
     },
     {
       id: "createdAt",
+      title: "Created At",
       type: "date-range",
     }
   ]
@@ -102,17 +105,14 @@ const InvoiceTable = () => {
         const status = row.getValue("status") as string
         return (
           <div className="flex items-center">
-            <div
-              className={`mr-2 h-2 w-2 rounded-full ${status === "pending"
-                ? "bg-yellow-500"
-                : status === "processing"
-                  ? "bg-blue-500"
-                  : status === "success"
-                    ? "bg-green-500"
-                    : "bg-red-500"
-                }`}
-            />
-            <span className="capitalize">{status}</span>
+            <Badge variant="outline" className={cn("text-xs capitalize", {
+              "text-yellow-500 border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/20": status === "pending",
+              "text-blue-500 border-blue-500 bg-blue-500/10 dark:bg-blue-500/20": status === "processing",
+              "text-green-500 border-green-500 bg-green-500/10 dark:bg-green-500/20": status === "success",
+              "text-destructive border-destructive bg-destructive/10 dark:bg-destructive/20": status === "failed",
+            })}>
+              {status === "pending" ? "Pending" : status === "processing" ? "Processing" : status === "success" ? "Success" : "Failed"}
+            </Badge>
           </div>
         )
       },
@@ -236,5 +236,3 @@ const InvoiceTable = () => {
     </div>
   )
 }
-
-export default InvoiceTable

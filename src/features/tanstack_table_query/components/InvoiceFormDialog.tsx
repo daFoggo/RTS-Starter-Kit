@@ -30,7 +30,7 @@ import { DIALOG_DESCRIPTIONS, DIALOG_TITLES, SUBMIT_BUTTON_TEXTS } from "../util
 import type { IInvoiceFormDialogProps } from "../utils/types";
 
 
-const InvoiceFormDialog = ({
+export const InvoiceFormDialog = ({
   isOpen,
   setIsOpen,
   form,
@@ -212,5 +212,3 @@ const InvoiceFormDialog = ({
     </Dialog>
   );
 };
-
-export default InvoiceFormDialog;

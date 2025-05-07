@@ -1,4 +1,5 @@
-import InvoiceTable from '@/features/tanstack_table_query/components/InvoiceTable'
+
+import { InvoiceTable } from '@/features/tanstack_table_query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/tanstack-table-query')({

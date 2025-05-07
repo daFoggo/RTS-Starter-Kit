@@ -33,7 +33,7 @@ export interface IInvoiceActionBarProps {
 export type StatusType = "pending" | "processing" | "success" | "failed";
 
 // you will have to make a different DTO if backend use different names for the fields
-export type CreateInvoiceDTO = Omit<IPayment, "id" | "createdAt">;
+export type CreateInvoiceDTO = Omit<IInvoice, "id" | "createdAt">;
 export type UpdateInvoiceDTO = Partial<CreateInvoiceDTO>;
 
 export type FormType = "read" | "create" | "update" | "delete";

@@ -50,16 +50,12 @@ export function DataTableToolbar<TData>({
   const [dateRanges, setDateRanges] = useState<Record<string, DateRange | undefined>>({})
   const [dateTimes, setDateTimes] = useState<Record<string, Date | undefined>>({})
 
-  // Sync our local state with the table's filter state
   useEffect(() => {
-    // Get all date-range and date-time columns
     const dateRangeColumns = filterableColumns.filter(col => col.type === "date-range").map(col => col.id);
     const dateTimeColumns = filterableColumns.filter(col => col.type === "date-time").map(col => col.id);
 
-    // Get current column filters from the table
     const columnFilters = table.getState().columnFilters;
 
-    // Update our state for date ranges
     const newDateRanges: Record<string, DateRange | undefined> = {};
     dateRangeColumns.forEach(columnId => {
       const filter = columnFilters.find(f => f.id === columnId);
@@ -70,7 +66,6 @@ export function DataTableToolbar<TData>({
       }
     });
 
-    // Update our state for date times
     const newDateTimes: Record<string, Date | undefined> = {};
     dateTimeColumns.forEach(columnId => {
       const filter = columnFilters.find(f => f.id === columnId);
@@ -81,7 +76,6 @@ export function DataTableToolbar<TData>({
       }
     });
 
-    // Set our local state - but only if it's different (to avoid infinite loops)
     if (JSON.stringify(newDateRanges) !== JSON.stringify(dateRanges)) {
       setDateRanges(newDateRanges);
     }
@@ -92,13 +86,11 @@ export function DataTableToolbar<TData>({
   }, [table.getState().columnFilters, filterableColumns]);
 
   const handleDateRangeChange = (columnId: string, dateRange: DateRange | undefined) => {
-    // When null or undefined value is selected, clear the filter
     if (!dateRange || !dateRange.from) {
       table.getColumn(columnId)?.setFilterValue(undefined);
       return;
     }
 
-    // Set the filter value - the table will store this and our useEffect will update the UI
     table.getColumn(columnId)?.setFilterValue({
       from: dateRange.from,
       to: dateRange.to || dateRange.from
@@ -106,15 +98,11 @@ export function DataTableToolbar<TData>({
   };
 
   const handleDateTimeChange = (columnId: string, dateTime: Date | undefined) => {
-    // Set the filter value - the table will store this and our useEffect will update the UI
     table.getColumn(columnId)?.setFilterValue(dateTime);
   };
 
   const handleResetFilters = () => {
-    // This will reset all column filters
     table.resetColumnFilters();
-
-    // Our useEffect will handle updating the UI based on the table's state
   }
 
   return (
@@ -135,11 +123,12 @@ export function DataTableToolbar<TData>({
             if (column.type === "date-range") {
               return (
                 <div key={column.id} className="flex flex-col gap-1 min-w-[240px]">
-                  {column.title && (<p className="text-sm font-medium">{column.title}</p>)}
-
                   <DatePickerWithRange
                     date={dateRanges[column.id]}
                     onChange={(dateRange) => handleDateRangeChange(column.id, dateRange)}
+                    placeholder={column.title ?
+                      `${column.title ? `Select ${column.title} range` : "Select date range"}`
+                      : "Pick a date range"}
                   />
                 </div>
               );

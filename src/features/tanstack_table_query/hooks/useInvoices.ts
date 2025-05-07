@@ -1,6 +1,6 @@
 import { GC_TIME, STALE_TIME } from "@/utils/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "../api/api";
+import { invoiceService } from "../service/invoiceService";
 import type { CreateInvoiceDTO, IInvoiceQueryParams } from "../utils/types";
 
 // keys for query cache
@@ -21,21 +21,21 @@ export const invoiceKeys = {
   detail: (id: string) => [...invoiceKeys.details(), id] as const,
 };
 
-export const useInvoices = (params: IInvoiceQueryParams) => {
+export const useGetInvoices = (params: IInvoiceQueryParams) => {
   const { status, search, page = 1, limit = 10 } = params;
 
   return useQuery({
     queryKey: invoiceKeys.list(params),
-    queryFn: () => api.getInvoices({ status, search, page, limit }),
+    queryFn: () => invoiceService.getInvoices({ status, search, page, limit }),
     staleTime: STALE_TIME,
     gcTime: GC_TIME,
   });
 };
 
-export const useInvoice = (id: string) => {
+export const useGetInvoice = (id: string) => {
   return useQuery({
     queryKey: invoiceKeys.detail(id),
-    queryFn: () => api.getInvoiceById(id),
+    queryFn: () => invoiceService.getInvoiceById(id),
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
@@ -44,7 +44,7 @@ export const useInvoice = (id: string) => {
 export const useCreateInvoice = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateInvoiceDTO) => api.createInvoice(data),
+    mutationFn: (data: CreateInvoiceDTO) => invoiceService.createInvoice(data),
     onSuccess: (newInvoice) => {
       // Update the cache with the new invoice data
       queryClient.setQueryData(invoiceKeys.detail(newInvoice.id), newInvoice);
@@ -62,7 +62,7 @@ export const useUpdateInvoice = (id: string) => {
 
   return useMutation({
     mutationFn: (data: Partial<CreateInvoiceDTO>) =>
-      api.updateInvoice(id, data),
+      invoiceService.updateInvoice(id, data),
     onSuccess: (updatedInvoice) => {
       // Update the cache with the updated invoice data
       queryClient.setQueryData(
@@ -81,7 +81,7 @@ export const useUpdateInvoice = (id: string) => {
 export const useDeleteInvoice = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.deleteInvoice(id),
+    mutationFn: (id: string) => invoiceService.deleteInvoice(id),
     onSuccess: (_, id) => {
       // Remove the deleted invoice from the cache
       queryClient.removeQueries({
@@ -106,7 +106,7 @@ export const useBulkUpdateInvoices = () => {
     }: {
       ids: string[];
       data: Partial<CreateInvoiceDTO>;
-    }) => api.bulkUpdateInvoices(ids, data),
+    }) => invoiceService.bulkUpdateInvoices(ids, data),
     onSuccess: (updatedInvoices) => {
       // Update the cache with the updated invoice data
       updatedInvoices.forEach((invoice) => {
@@ -125,7 +125,7 @@ export const useBulkDeleteInvoices = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (ids: string[]) => api.bulkDeleteInvoices(ids),
+    mutationFn: (ids: string[]) => invoiceService.bulkDeleteInvoices(ids),
     onSuccess: (_, ids) => {
       ids.forEach((id) => {
         // Remove the deleted invoice from the cache

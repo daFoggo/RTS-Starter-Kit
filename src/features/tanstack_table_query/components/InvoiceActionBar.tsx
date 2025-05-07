@@ -15,7 +15,7 @@ import { CheckCircle2, Trash2 } from "lucide-react"
 import { useInvoiceActionBar } from "../hooks/usInvoiceActionBar"
 import type { IInvoiceActionBarProps } from "../utils/types"
 
-const InvoiceActionBar = ({ table, statusOptions }: IInvoiceActionBarProps) => {
+export const InvoiceActionBar = ({ table, statusOptions }: IInvoiceActionBarProps) => {
     const {
         handleBulkStatusUpdate,
         handleBulkDelete,
@@ -66,5 +66,3 @@ const InvoiceActionBar = ({ table, statusOptions }: IInvoiceActionBarProps) => {
         </DataTableActionBar>
     )
 }
-
-export default InvoiceActionBar

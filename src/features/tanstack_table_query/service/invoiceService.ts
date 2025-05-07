@@ -1,11 +1,10 @@
 import { toast } from "sonner";
 import { SAMPLE_INVOICES } from "../utils/constants";
 import type { CreateInvoiceDTO, IInvoice } from "../utils/types";
-
+import { delay } from "@/utils/functions";
 // simulate a delay for the API call
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const api = {
+export const invoiceService = {
   // in real world, you would use the following code to fetch data from an API like this:
   //   getInvoices: async (): Promise<IInvoice[]> => {
   //     const response = await fetch(INVOICE_ENDPOINTS.DEFAULT, {
@@ -39,10 +38,10 @@ export const api = {
     );
   },
 
-  createInvoice: async (payment: CreateInvoiceDTO): Promise<IInvoice> => {
+  createInvoice: async (invoice: CreateInvoiceDTO): Promise<IInvoice> => {
     await delay(800);
-    const newPayment: IInvoice = {
-      ...payment,
+    const newInvoice: IInvoice = {
+      ...invoice,
       id: Math.random().toString(36).substring(2, 10),
       createdAt: new Date(),
       amount: 0,
@@ -50,18 +49,18 @@ export const api = {
       email: "",
     };
 
-    SAMPLE_INVOICES.push(newPayment);
-    return newPayment;
+    SAMPLE_INVOICES.push(newInvoice);
+    return newInvoice;
   },
 
   updateInvoice: async (
     id: string,
-    payment: Partial<IInvoice>
+    invoice: Partial<IInvoice>
   ): Promise<IInvoice> => {
     await delay(800);
     const index = SAMPLE_INVOICES.findIndex((invoice) => invoice.id === id);
     if (index !== -1) {
-      SAMPLE_INVOICES[index] = { ...SAMPLE_INVOICES[index], ...payment };
+      SAMPLE_INVOICES[index] = { ...SAMPLE_INVOICES[index], ...invoice };
       return SAMPLE_INVOICES[index];
     } else {
       toast.error("Invoice not found");
